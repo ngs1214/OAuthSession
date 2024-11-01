@@ -37,7 +37,9 @@ public class SecurityConfig {
 //                .oauth2Login(Customizer.withDefaults());
                 .oauth2Login((oath2Login) -> oath2Login
                         .loginPage("/login")
+                        //클라이언트가 OAuth2클라이언트 등록 정보를 관리
                         .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
+                        //인증된 클라이언트의 정보를 관리하며, 액세스 토큰과 리프레시 토큰 등의 정보를 저장하고 로드
                         .authorizedClientService(customOAuth2AuthorizationService.oAuth2AuthorizedClientService(jdbcTemplate,customClientRegistrationRepo.clientRegistrationRepository()))
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)
