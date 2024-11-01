@@ -30,6 +30,7 @@ public class SecurityConfig {
         http
 //                .oauth2Login(Customizer.withDefaults());
                 .oauth2Login((oath2Login) -> oath2Login
+                        .loginPage("/login")
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)
                         )
