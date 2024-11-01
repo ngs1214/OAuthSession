@@ -37,25 +37,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         //구현
-        String role = "ROLE_USER";
-        return new CustomOAuth2User(oAuth2Response, role);
-//        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-//        boolean exists = userRepository.existsByUsername(username);
-//        if (exists) {
-//
-//            //있는경우
-//            UserEntity userEntity = new UserEntity();
-//            userEntity.setUsername(username);
-//        } else {
-//            //없는경우
-//            UserEntity userEntity = new UserEntity();
-//            userEntity.setUsername(username);
-//            userEntity.setEmail(oAuth2Response.getEmail());
-//            userEntity.setRole("ROLE_ADMIN");
-//
-//            userRepository.save(userEntity);
-//
-//        }
+        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
+        String role = null;
+        UserEntity findUser = userRepository.findByUsername(username);
+        if (findUser != null) {
+            role = findUser.getRole();
+
+            findUser.setEmail(oAuth2Response.getEmail());
+            userRepository.save(findUser);
+        } else {
+            //없는경우
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername(username);
+            userEntity.setEmail(oAuth2Response.getEmail());
+            userEntity.setRole("ROLE_ADMIN");
+            userRepository.save(userEntity);
+        }
+
+
+        return new CustomOAuth2User(oAuth2Response, role );
 
     }
 }
