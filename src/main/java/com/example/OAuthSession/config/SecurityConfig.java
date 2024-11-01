@@ -1,5 +1,7 @@
 package com.example.OAuthSession.config;
 
+import com.example.OAuthSession.service.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -9,7 +11,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,8 +28,12 @@ public class SecurityConfig {
 
         //custom할려면 .oauth2Client() 사용
         http
-                .oauth2Login(Customizer.withDefaults());
-
+//                .oauth2Login(Customizer.withDefaults());
+                .oauth2Login((oath2Login) -> oath2Login
+                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)
+                        )
+                );
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/", "/oauth2/**", "/login/**").permitAll()
